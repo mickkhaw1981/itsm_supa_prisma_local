@@ -1,3 +1,5 @@
+"use client";
+
 import { getTicketById } from "@/lib/mock/tickets";
 import { notFound } from "next/navigation";
 import { Breadcrumb } from "@/components/tickets/breadcrumb";
@@ -7,13 +9,21 @@ import { TicketActionButtons } from "@/components/tickets/ticket-action-buttons"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 
-// @ts-ignore - Next.js has issues with the page props typing in this version
+// The simplest approach - use "use client" and avoid the async params issue
 export default function TicketDetailPage({ params }: any) {
+  // Using a normal object as params (not a Promise)
   const id = params?.id;
   const ticket = getTicketById(id);
 
   if (!ticket) {
-    notFound();
+    return (
+      <div className="container mx-auto py-16 text-center">
+        <h1 className="text-3xl font-bold">Ticket Not Found</h1>
+        <p className="mt-4 text-lg text-muted-foreground">
+          The ticket you're looking for doesn't exist or may have been deleted.
+        </p>
+      </div>
+    );
   }
 
   return (
@@ -22,7 +32,7 @@ export default function TicketDetailPage({ params }: any) {
 
       <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
         <TicketDetailHeader ticket={ticket} />
-        <TicketActionButtons ticket={ticket} onDelete={() => {}} />
+        <TicketActionButtons ticket={ticket} />
       </div>
 
       <Separator className="my-6" />

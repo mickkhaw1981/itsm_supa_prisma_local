@@ -10,24 +10,21 @@ import { useState } from "react";
 
 interface TicketActionButtonsProps {
   ticket: Ticket;
-  onDelete?: (id: string) => void;
 }
 
-export function TicketActionButtons({
-  ticket,
-  onDelete,
-}: TicketActionButtonsProps) {
+export function TicketActionButtons({ ticket }: TicketActionButtonsProps) {
   const router = useRouter();
   const [isDeleting, setIsDeleting] = useState(false);
 
+  // Handle delete internally instead of accepting a function prop
   const handleDelete = (id: string) => {
     setIsDeleting(true);
     try {
-      // In a real app, this would be an API call
+      // Mock delete - in a real app, this would call an API
       console.log(`Deleting ticket with ID: ${id}`);
-      if (onDelete) {
-        onDelete(id);
-      }
+
+      // Refresh and redirect
+      router.refresh();
       router.push("/tickets");
     } finally {
       setIsDeleting(false);
