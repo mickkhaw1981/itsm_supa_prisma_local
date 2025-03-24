@@ -1,57 +1,42 @@
-"use client";
-
-import { useState } from "react";
 import Link from "next/link";
-import { getTickets } from "@/lib/mock/tickets";
+import { getTicketsFromDb } from "@/lib/db/tickets";
 import { TicketFilters } from "@/components/tickets/ticket-filters";
 import { TicketTable } from "@/components/tickets/ticket-table";
 import { Button } from "@/components/ui/button";
-import { Ticket } from "@/types/ticket";
 
-export default function TicketsPage() {
-  const allTickets = getTickets();
-  const [filteredTickets, setFilteredTickets] = useState<Ticket[]>(allTickets);
+export default async function TicketsPage({
+  searchParams,
+}: {
+  searchParams: any;
+}) {
+  // Fetch tickets from database
+  const allTickets = await getTicketsFromDb();
 
-  const handleFilterChange = ({
-    status,
-    priority,
-    search,
-  }: {
-    status?: Ticket["status"];
-    priority?: Ticket["priority"];
-    search?: string;
-  }) => {
-    const filtered = allTickets.filter((ticket) => {
-      // Filter by status if specified
-      if (status && ticket.status !== status) return false;
+  // Apply server-side filtering based on searchParams
+  const filteredTickets = allTickets.filter((ticket) => {
+    // Filter by status if specified
+    if (searchParams.status && ticket.status !== searchParams.status)
+      return false;
 
-      // Filter by priority if specified
-      if (priority && ticket.priority !== priority) return false;
+    // Filter by priority if specified
+    if (searchParams.priority && ticket.priority !== searchParams.priority)
+      return false;
 
-      // Filter by search term if specified
-      if (search) {
-        const searchLower = search.toLowerCase();
-        return (
-          ticket.title.toLowerCase().includes(searchLower) ||
-          ticket.description.toLowerCase().includes(searchLower) ||
-          ticket.id.toLowerCase().includes(searchLower) ||
-          (ticket.assignedTo &&
-            ticket.assignedTo.toLowerCase().includes(searchLower)) ||
-          ticket.submittedBy.toLowerCase().includes(searchLower)
-        );
-      }
+    // Filter by search term if specified
+    if (searchParams.search) {
+      const searchLower = searchParams.search.toLowerCase();
+      return (
+        ticket.title.toLowerCase().includes(searchLower) ||
+        ticket.description.toLowerCase().includes(searchLower) ||
+        ticket.id.toLowerCase().includes(searchLower) ||
+        (ticket.assignedTo &&
+          ticket.assignedTo.toLowerCase().includes(searchLower)) ||
+        ticket.submittedBy.toLowerCase().includes(searchLower)
+      );
+    }
 
-      return true;
-    });
-
-    setFilteredTickets(filtered);
-  };
-
-  const handleDelete = (id: string) => {
-    // In a real app, this would make an API call
-    // For now we'll just filter the tickets client-side
-    setFilteredTickets((prev) => prev.filter((ticket) => ticket.id !== id));
-  };
+    return true;
+  });
 
   return (
     <div className="space-y-6">
@@ -63,8 +48,8 @@ export default function TicketsPage() {
       </div>
 
       <div className="space-y-4">
-        <TicketFilters onFilterChange={handleFilterChange} />
-        <TicketTable tickets={filteredTickets} onDelete={handleDelete} />
+        <TicketFilters />
+        <TicketTable tickets={filteredTickets} />
       </div>
     </div>
   );

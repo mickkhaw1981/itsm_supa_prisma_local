@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -9,70 +10,47 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Ticket } from "@/types/ticket";
+import { Input } from "@/components/ui/input";
+import { X } from "lucide-react";
 
-interface TicketFiltersProps {
-  onFilterChange: (filters: {
-    status?: Ticket["status"];
-    priority?: Ticket["priority"];
-    search?: string;
-  }) => void;
-}
+export function TicketFilters() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-export function TicketFilters({ onFilterChange }: TicketFiltersProps) {
-  const [status, setStatus] = useState<Ticket["status"] | "all">("all");
-  const [priority, setPriority] = useState<Ticket["priority"] | "all">("all");
-  const [search, setSearch] = useState("");
+  const [status, setStatus] = useState(searchParams.get("status") || "");
+  const [priority, setPriority] = useState(searchParams.get("priority") || "");
+  const [search, setSearch] = useState(searchParams.get("search") || "");
 
-  const handleStatusChange = (value: string) => {
-    const newStatus = value as Ticket["status"] | "all";
-    setStatus(newStatus);
-    onFilterChange({
-      status: newStatus === "all" ? undefined : newStatus,
-      priority: priority === "all" ? undefined : priority,
-      search: search || undefined,
-    });
-  };
+  // Update the URL when filters change
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (status) params.set("status", status);
+    if (priority) params.set("priority", priority);
+    if (search) params.set("search", search);
 
-  const handlePriorityChange = (value: string) => {
-    const newPriority = value as Ticket["priority"] | "all";
-    setPriority(newPriority);
-    onFilterChange({
-      status: status === "all" ? undefined : status,
-      priority: newPriority === "all" ? undefined : newPriority,
-      search: search || undefined,
-    });
-  };
+    const url = params.toString() ? `?${params.toString()}` : "";
+    router.push(`/tickets${url}`);
+  }, [status, priority, search, router]);
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newSearch = e.target.value;
-    setSearch(newSearch);
-    onFilterChange({
-      status: status === "all" ? undefined : status,
-      priority: priority === "all" ? undefined : priority,
-      search: newSearch || undefined,
-    });
-  };
-
+  // Reset all filters
   const handleReset = () => {
-    setStatus("all");
-    setPriority("all");
+    setStatus("");
+    setPriority("");
     setSearch("");
-    onFilterChange({});
   };
 
   return (
-    <div className="flex flex-col space-y-4 md:flex-row md:items-end md:space-x-4 md:space-y-0">
-      <div className="flex flex-col space-y-2">
+    <div className="flex flex-col gap-4 lg:flex-row lg:items-end">
+      <div className="grid gap-2">
         <label htmlFor="status" className="text-sm font-medium">
           Status
         </label>
-        <Select value={status} onValueChange={handleStatusChange}>
-          <SelectTrigger id="status" className="w-full md:w-[180px]">
-            <SelectValue placeholder="All Statuses" />
+        <Select value={status} onValueChange={setStatus}>
+          <SelectTrigger className="w-full lg:w-[180px]">
+            <SelectValue placeholder="Any status" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Statuses</SelectItem>
+            <SelectItem value="">Any status</SelectItem>
             <SelectItem value="open">Open</SelectItem>
             <SelectItem value="in-progress">In Progress</SelectItem>
             <SelectItem value="resolved">Resolved</SelectItem>
@@ -80,16 +58,16 @@ export function TicketFilters({ onFilterChange }: TicketFiltersProps) {
           </SelectContent>
         </Select>
       </div>
-      <div className="flex flex-col space-y-2">
+      <div className="grid gap-2">
         <label htmlFor="priority" className="text-sm font-medium">
           Priority
         </label>
-        <Select value={priority} onValueChange={handlePriorityChange}>
-          <SelectTrigger id="priority" className="w-full md:w-[180px]">
-            <SelectValue placeholder="All Priorities" />
+        <Select value={priority} onValueChange={setPriority}>
+          <SelectTrigger className="w-full lg:w-[180px]">
+            <SelectValue placeholder="Any priority" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Priorities</SelectItem>
+            <SelectItem value="">Any priority</SelectItem>
             <SelectItem value="low">Low</SelectItem>
             <SelectItem value="medium">Medium</SelectItem>
             <SelectItem value="high">High</SelectItem>
@@ -97,20 +75,32 @@ export function TicketFilters({ onFilterChange }: TicketFiltersProps) {
           </SelectContent>
         </Select>
       </div>
-      <div className="flex flex-col space-y-2 flex-1">
+      <div className="grid gap-2 flex-1">
         <label htmlFor="search" className="text-sm font-medium">
           Search
         </label>
-        <input
-          id="search"
-          type="text"
-          value={search}
-          onChange={handleSearchChange}
-          placeholder="Search tickets..."
-          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-        />
+        <div className="relative">
+          <Input
+            id="search"
+            placeholder="Search tickets..."
+            className="w-full"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          {search && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute right-0 top-0 h-full"
+              onClick={() => setSearch("")}
+            >
+              <X className="h-4 w-4" />
+              <span className="sr-only">Clear search</span>
+            </Button>
+          )}
+        </div>
       </div>
-      <Button variant="outline" onClick={handleReset} className="mt-4 md:mt-0">
+      <Button variant="outline" className="shrink-0" onClick={handleReset}>
         Reset Filters
       </Button>
     </div>

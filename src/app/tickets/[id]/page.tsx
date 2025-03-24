@@ -1,5 +1,5 @@
-import { getTicketById } from "@/lib/mock/tickets";
 import { notFound } from "next/navigation";
+import { getTicketByIdFromDb } from "@/lib/db/tickets";
 import { Breadcrumb } from "@/components/tickets/breadcrumb";
 import { TicketDetailHeader } from "@/components/tickets/ticket-detail-header";
 import { TicketDetailCard } from "@/components/tickets/ticket-detail-card";
@@ -7,10 +7,10 @@ import { TicketActionButtons } from "@/components/tickets/ticket-action-buttons"
 import { Separator } from "@/components/ui/separator";
 import { TicketTabs } from "@/components/tickets-wrapper";
 
-export default function Page({ params }: any) {
+export default async function Page({ params }: { params: any }) {
   // Get the ID safely
   const id = Array.isArray(params.id) ? params.id[0] : params.id;
-  const ticket = getTicketById(id);
+  const ticket = await getTicketByIdFromDb(id);
 
   // Use Next.js notFound() for missing tickets
   if (!ticket) {

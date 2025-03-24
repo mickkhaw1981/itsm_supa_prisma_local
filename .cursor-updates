@@ -16,3 +16,9 @@
 - Converted the ticket detail page to use a server component
 - Used a simpler approach with direct component imports rather than client-side wrappers
 - Fixed build errors by using correct types
+
+# Cursor Updates
+
+- Created Ticket model in Prisma schema with appropriate enums for status and priority - May 31, 2023 10:30 AM
+- Created Prisma seed script with 10 sample IT service tickets and added db:seed script - May 31, 2023 11:15 AM
+- Replaced mock data with Prisma database queries for ticket listing and detail pages - May 31, 2023 12:30 PM
