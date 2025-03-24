@@ -1,5 +1,7 @@
+"use client";
+
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -8,86 +10,109 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Ticket } from "@/types/ticket";
-import { X } from "lucide-react";
-import { ChangeEvent } from "react";
 
 interface TicketFiltersProps {
-  statusFilter: string;
-  setStatusFilter: (value: string) => void;
-  priorityFilter: string;
-  setPriorityFilter: (value: string) => void;
-  searchQuery: string;
-  setSearchQuery: (value: string) => void;
-  resetFilters: () => void;
+  onFilterChange: (filters: {
+    status?: Ticket["status"];
+    priority?: Ticket["priority"];
+    search?: string;
+  }) => void;
 }
 
-export function TicketFilters({
-  statusFilter,
-  setStatusFilter,
-  priorityFilter,
-  setPriorityFilter,
-  searchQuery,
-  setSearchQuery,
-  resetFilters,
-}: TicketFiltersProps) {
-  const statuses: Ticket["status"][] = [
-    "open",
-    "in-progress",
-    "resolved",
-    "closed",
-  ];
-  const priorities: Ticket["priority"][] = ["low", "medium", "high", "urgent"];
+export function TicketFilters({ onFilterChange }: TicketFiltersProps) {
+  const [status, setStatus] = useState<Ticket["status"] | "all">("all");
+  const [priority, setPriority] = useState<Ticket["priority"] | "all">("all");
+  const [search, setSearch] = useState("");
+
+  const handleStatusChange = (value: string) => {
+    const newStatus = value as Ticket["status"] | "all";
+    setStatus(newStatus);
+    onFilterChange({
+      status: newStatus === "all" ? undefined : newStatus,
+      priority: priority === "all" ? undefined : priority,
+      search: search || undefined,
+    });
+  };
+
+  const handlePriorityChange = (value: string) => {
+    const newPriority = value as Ticket["priority"] | "all";
+    setPriority(newPriority);
+    onFilterChange({
+      status: status === "all" ? undefined : status,
+      priority: newPriority === "all" ? undefined : newPriority,
+      search: search || undefined,
+    });
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newSearch = e.target.value;
+    setSearch(newSearch);
+    onFilterChange({
+      status: status === "all" ? undefined : status,
+      priority: priority === "all" ? undefined : priority,
+      search: newSearch || undefined,
+    });
+  };
+
+  const handleReset = () => {
+    setStatus("all");
+    setPriority("all");
+    setSearch("");
+    onFilterChange({});
+  };
 
   return (
-    <div className="flex flex-col gap-4 mb-6">
-      <div className="flex flex-col md:flex-row gap-4">
-        <div className="flex-1">
-          <Input
-            placeholder="Search tickets..."
-            value={searchQuery}
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              setSearchQuery(e.target.value)
-            }
-            className="w-full"
-          />
-        </div>
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-full md:w-[180px]">
-            <SelectValue placeholder="Status" />
+    <div className="flex flex-col space-y-4 md:flex-row md:items-end md:space-x-4 md:space-y-0">
+      <div className="flex flex-col space-y-2">
+        <label htmlFor="status" className="text-sm font-medium">
+          Status
+        </label>
+        <Select value={status} onValueChange={handleStatusChange}>
+          <SelectTrigger id="status" className="w-full md:w-[180px]">
+            <SelectValue placeholder="All Statuses" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">All Statuses</SelectItem>
-            {statuses.map((status) => (
-              <SelectItem key={status} value={status}>
-                {status === "in-progress"
-                  ? "In Progress"
-                  : status.charAt(0).toUpperCase() + status.slice(1)}
-              </SelectItem>
-            ))}
+            <SelectItem value="all">All Statuses</SelectItem>
+            <SelectItem value="open">Open</SelectItem>
+            <SelectItem value="in-progress">In Progress</SelectItem>
+            <SelectItem value="resolved">Resolved</SelectItem>
+            <SelectItem value="closed">Closed</SelectItem>
           </SelectContent>
         </Select>
-        <Select value={priorityFilter} onValueChange={setPriorityFilter}>
-          <SelectTrigger className="w-full md:w-[180px]">
-            <SelectValue placeholder="Priority" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="">All Priorities</SelectItem>
-            {priorities.map((priority) => (
-              <SelectItem key={priority} value={priority}>
-                {priority.charAt(0).toUpperCase() + priority.slice(1)}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <Button
-          variant="outline"
-          onClick={resetFilters}
-          className="w-full md:w-auto"
-        >
-          <X className="h-4 w-4 mr-2" />
-          Reset Filters
-        </Button>
       </div>
+      <div className="flex flex-col space-y-2">
+        <label htmlFor="priority" className="text-sm font-medium">
+          Priority
+        </label>
+        <Select value={priority} onValueChange={handlePriorityChange}>
+          <SelectTrigger id="priority" className="w-full md:w-[180px]">
+            <SelectValue placeholder="All Priorities" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Priorities</SelectItem>
+            <SelectItem value="low">Low</SelectItem>
+            <SelectItem value="medium">Medium</SelectItem>
+            <SelectItem value="high">High</SelectItem>
+            <SelectItem value="urgent">Urgent</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="flex flex-col space-y-2 flex-1">
+        <label htmlFor="search" className="text-sm font-medium">
+          Search
+        </label>
+        <input
+          id="search"
+          type="text"
+          value={search}
+          onChange={handleSearchChange}
+          placeholder="Search tickets..."
+          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+        />
+      </div>
+      <Button variant="outline" onClick={handleReset} className="mt-4 md:mt-0">
+        Reset Filters
+      </Button>
     </div>
   );
 }

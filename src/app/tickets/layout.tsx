@@ -1,15 +1,16 @@
-import { ReactNode } from "react";
 import Header from "@/components/layout/header";
 
-interface TicketsLayoutProps {
-  children: ReactNode;
-}
-
-export default function TicketsLayout({ children }: TicketsLayoutProps) {
+export default function TicketsLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex min-h-screen flex-col">
       <Header />
-      <main className="flex-1 container mx-auto p-4 md:p-6">{children}</main>
+      <main className="flex-1 container mx-auto px-4 py-6 md:px-6 md:py-8">
+        {children}
+      </main>
     </div>
   );
 }

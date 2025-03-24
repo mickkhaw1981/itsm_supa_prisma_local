@@ -1,192 +1,145 @@
 import { Ticket } from "@/types/ticket";
-import { v4 as uuidv4 } from "uuid";
 
-// Generate random dates within a range
-function randomDate(start: Date, end: Date): Date {
-  return new Date(
-    start.getTime() + Math.random() * (end.getTime() - start.getTime())
-  );
-}
-
-const now = new Date();
-const oneMonthAgo = new Date(
-  now.getFullYear(),
-  now.getMonth() - 1,
-  now.getDate()
-);
-
-// Mock ticket data
+// Mock data for tickets
 export const tickets: Ticket[] = [
   {
-    id: uuidv4(),
-    title: "Network connectivity issues in marketing department",
+    id: "TKT-001",
+    title: "Cannot access email account",
     description:
-      "Multiple users in the marketing department are experiencing intermittent network connectivity issues. Unable to access shared drives and internet connection drops frequently.",
+      "I am unable to log into my email account after the recent password reset.",
     status: "open",
     priority: "high",
-    createdAt: randomDate(oneMonthAgo, now),
-    updatedAt: randomDate(oneMonthAgo, now),
+    createdAt: new Date("2023-10-15T09:30:00"),
+    updatedAt: new Date("2023-10-15T09:30:00"),
     assignedTo: "John Smith",
-    category: "Network",
-    submittedBy: "Emily Johnson",
+    category: "Email",
+    submittedBy: "Alex Johnson",
   },
   {
-    id: uuidv4(),
-    title: "Email server not sending external emails",
+    id: "TKT-002",
+    title: "Monitor displays blue screen",
     description:
-      "Our email server is not sending emails to external domains. Internal emails work fine. This is affecting communication with clients and partners.",
+      "My monitor suddenly started showing a blue screen and won't display anything else.",
     status: "in-progress",
     priority: "urgent",
-    createdAt: randomDate(oneMonthAgo, now),
-    updatedAt: randomDate(oneMonthAgo, now),
-    assignedTo: "Alex Rivera",
-    category: "Email",
-    submittedBy: "Michael Wong",
+    createdAt: new Date("2023-10-14T11:45:00"),
+    updatedAt: new Date("2023-10-15T08:15:00"),
+    assignedTo: "Sarah Williams",
+    category: "Hardware",
+    submittedBy: "Chris Davis",
   },
   {
-    id: uuidv4(),
-    title: "New software installation request",
+    id: "TKT-003",
+    title: "Request for new software installation",
     description:
-      "Need Adobe Creative Suite installed on my workstation for the new marketing campaign project.",
+      "I need Adobe Photoshop installed on my workstation for the marketing project.",
     status: "open",
     priority: "medium",
-    createdAt: randomDate(oneMonthAgo, now),
-    updatedAt: randomDate(oneMonthAgo, now),
+    createdAt: new Date("2023-10-13T15:20:00"),
+    updatedAt: new Date("2023-10-13T15:20:00"),
     assignedTo: undefined,
     category: "Software",
-    submittedBy: "Sarah Davis",
+    submittedBy: "Jamie Richardson",
   },
   {
-    id: uuidv4(),
-    title: "Printer offline in finance department",
+    id: "TKT-004",
+    title: "Printer not connecting to network",
     description:
-      "The main printer in the finance department is showing offline status. We've tried restarting it but still not working.",
-    status: "resolved",
-    priority: "medium",
-    createdAt: randomDate(oneMonthAgo, now),
-    updatedAt: randomDate(oneMonthAgo, now),
-    assignedTo: "David Chen",
-    category: "Hardware",
-    submittedBy: "Robert Wilson",
-  },
-  {
-    id: uuidv4(),
-    title: "VPN connection issues for remote workers",
-    description:
-      "Several remote workers reporting inability to connect to VPN. Error message says 'Connection timeout'.",
+      "The office printer on the 3rd floor isn't connecting to the network and shows offline status.",
     status: "in-progress",
-    priority: "high",
-    createdAt: randomDate(oneMonthAgo, now),
-    updatedAt: randomDate(oneMonthAgo, now),
-    assignedTo: "Maria Garcia",
+    priority: "medium",
+    createdAt: new Date("2023-10-12T10:10:00"),
+    updatedAt: new Date("2023-10-14T13:45:00"),
+    assignedTo: "Mike Peterson",
     category: "Network",
-    submittedBy: "James Taylor",
+    submittedBy: "Dana Morgan",
   },
   {
-    id: uuidv4(),
+    id: "TKT-005",
+    title: "VPN connection issues",
+    description:
+      "Cannot establish VPN connection when working remotely, getting timeout errors.",
+    status: "resolved",
+    priority: "high",
+    createdAt: new Date("2023-10-11T09:00:00"),
+    updatedAt: new Date("2023-10-14T16:30:00"),
+    assignedTo: "Lisa Cooper",
+    category: "Network",
+    submittedBy: "Sam Wilson",
+  },
+  {
+    id: "TKT-006",
     title: "Password reset request",
     description:
-      "Need password reset for my account. I've been locked out after multiple failed attempts.",
+      "I need to reset my password for the accounting system as I've been locked out.",
     status: "closed",
     priority: "low",
-    createdAt: randomDate(oneMonthAgo, now),
-    updatedAt: randomDate(oneMonthAgo, now),
-    assignedTo: "Sophie Martin",
-    category: "Security",
-    submittedBy: "Thomas Brown",
+    createdAt: new Date("2023-10-10T14:25:00"),
+    updatedAt: new Date("2023-10-10T16:05:00"),
+    assignedTo: "John Smith",
+    category: "Access",
+    submittedBy: "Taylor Green",
   },
   {
-    id: uuidv4(),
-    title: "New employee setup",
+    id: "TKT-007",
+    title: "Request for additional monitor",
     description:
-      "Need complete workstation setup for new employee starting next Monday in the sales department.",
+      "Requesting an additional monitor for my workstation to improve productivity.",
+    status: "resolved",
+    priority: "low",
+    createdAt: new Date("2023-10-09T11:30:00"),
+    updatedAt: new Date("2023-10-12T09:45:00"),
+    assignedTo: "Admin Team",
+    category: "Hardware",
+    submittedBy: "Jordan Lee",
+  },
+  {
+    id: "TKT-008",
+    title: "Email not sending attachments",
+    description:
+      "When I try to send emails with attachments, they arrive without the attachment.",
     status: "open",
     priority: "medium",
-    createdAt: randomDate(oneMonthAgo, now),
-    updatedAt: randomDate(oneMonthAgo, now),
+    createdAt: new Date("2023-10-13T13:15:00"),
+    updatedAt: new Date("2023-10-13T13:15:00"),
     assignedTo: undefined,
-    category: "Onboarding",
-    submittedBy: "Jennifer Lee",
+    category: "Email",
+    submittedBy: "Casey Brown",
   },
   {
-    id: uuidv4(),
-    title: "CRM system error when creating new contacts",
+    id: "TKT-009",
+    title: "Laptop battery draining quickly",
     description:
-      "Receiving error code E-4032 when trying to create new contacts in the CRM system. This is affecting the sales team's ability to log new leads.",
+      "My laptop battery is draining within 1 hour of being fully charged.",
     status: "in-progress",
-    priority: "high",
-    createdAt: randomDate(oneMonthAgo, now),
-    updatedAt: randomDate(oneMonthAgo, now),
-    assignedTo: "Ryan Mitchell",
-    category: "Software",
-    submittedBy: "Patricia Lopez",
-  },
-  {
-    id: uuidv4(),
-    title: "Conference room projector not working",
-    description:
-      "The projector in the main conference room isn't connecting to laptops. We have an important client presentation tomorrow.",
-    status: "resolved",
-    priority: "urgent",
-    createdAt: randomDate(oneMonthAgo, now),
-    updatedAt: randomDate(oneMonthAgo, now),
-    assignedTo: "Chris Anderson",
+    priority: "medium",
+    createdAt: new Date("2023-10-12T15:40:00"),
+    updatedAt: new Date("2023-10-13T10:20:00"),
+    assignedTo: "Tech Support",
     category: "Hardware",
-    submittedBy: "Lisa Thompson",
+    submittedBy: "Riley Martin",
   },
   {
-    id: uuidv4(),
-    title: "Website showing 500 error intermittently",
+    id: "TKT-010",
+    title: "Cannot access shared drive",
     description:
-      "Our company website is occasionally showing 500 internal server errors. This is happening randomly and affecting potential customers.",
-    status: "open",
+      "I'm unable to access the marketing department's shared drive since yesterday.",
+    status: "closed",
     priority: "high",
-    createdAt: randomDate(oneMonthAgo, now),
-    updatedAt: randomDate(oneMonthAgo, now),
-    assignedTo: "Daniel Kim",
-    category: "Web",
-    submittedBy: "Amanda Carter",
+    createdAt: new Date("2023-10-11T08:50:00"),
+    updatedAt: new Date("2023-10-12T11:10:00"),
+    assignedTo: "Network Team",
+    category: "Access",
+    submittedBy: "Morgan Fisher",
   },
 ];
 
-// Function to get a ticket by ID
-export function getTicketById(id: string): Ticket | undefined {
+// Function to get all tickets
+export const getTickets = (): Ticket[] => {
+  return tickets;
+};
+
+// Function to get ticket by ID
+export const getTicketById = (id: string): Ticket | undefined => {
   return tickets.find((ticket) => ticket.id === id);
-}
-
-// Function to update a ticket
-export function updateTicket(
-  id: string,
-  data: Partial<Ticket>
-): Ticket | undefined {
-  const ticketIndex = tickets.findIndex((ticket) => ticket.id === id);
-
-  if (ticketIndex === -1) {
-    return undefined;
-  }
-
-  const updatedTicket = {
-    ...tickets[ticketIndex],
-    ...data,
-    updatedAt: new Date(),
-  };
-
-  tickets[ticketIndex] = updatedTicket;
-  return updatedTicket;
-}
-
-// Function to create a new ticket
-export function createTicket(
-  ticket: Omit<Ticket, "id" | "createdAt" | "updatedAt">
-): Ticket {
-  const now = new Date();
-  const newTicket: Ticket = {
-    ...ticket,
-    id: uuidv4(),
-    createdAt: now,
-    updatedAt: now,
-  };
-
-  tickets.push(newTicket);
-  return newTicket;
-}
+};

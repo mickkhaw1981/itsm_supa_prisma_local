@@ -10,6 +10,34 @@ alwaysApply: true
 - Commit frequently to maintain a reliable project history.
 - Always ask clarifying questions if tasks or requirements are unclear.
 
-## User Interface (UI)
+## User Interface (UI) and Styling
 - **Never change or affect the UI unintentionally. Only alter UI components if explicitly instructed or clearly part of the assigned task.
-- Always ensure UI changes are fully tested and validated.
+- Use ShadCN UI and Radix components
+- Use `npx shadcn@latest add <component-name>` to add new shadcn components. NEVER use `npx shadcn-ui@latest add <component-name>` 
+- Use Tailwind CSS (mobile-first, dark mode with dark:(class)). Extend brand tokens in `tailwind.config.ts`.
+- Use lucide-react Icons
+
+
+## Typescript Conventions:
+- Strict mode. Avoid `any`.
+- Use optional chaining, union types (no enums).
+
+
+## Coding Conventions:
+- Use App Router
+- Default to Server Components where possible
+- Assume we always design for mobile and web. Follow responsive design principles
+- Implement efficient data fetching
+- Implement error handling
+- Use loading states
+- Follow routing conventions
+- Use absolute imports (@/ for src, ~/ for outside)
+- Write clean, concise components
+- Do not include comments unless it is for complex logic
+
+
+## Naming Conventions:
+- Use lowercase with dashes for directories (e.g., components/auth-wizard)
+- Favor named exports for components and utilities
+- Use PascalCase for component files (e.g., VisaForm.tsx)
+- Use camelCase for utility files (e.g., formValidator.ts)

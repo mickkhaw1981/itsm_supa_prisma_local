@@ -8,39 +8,46 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Ticket } from "@/types/ticket";
 import { useState } from "react";
-import { Trash } from "lucide-react";
 
 interface DeleteDialogProps {
-  ticket: Ticket;
+  ticketId: string;
+  ticketTitle: string;
   onDelete: (id: string) => void;
+  trigger: React.ReactNode;
 }
 
-export function DeleteDialog({ ticket, onDelete }: DeleteDialogProps) {
+export function DeleteDialog({
+  ticketId,
+  ticketTitle,
+  onDelete,
+  trigger,
+}: DeleteDialogProps) {
   const [open, setOpen] = useState(false);
 
   const handleDelete = () => {
-    onDelete(ticket.id);
+    onDelete(ticketId);
     setOpen(false);
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="destructive" size="icon">
-          <Trash className="h-4 w-4" />
-        </Button>
-      </DialogTrigger>
-      <DialogContent>
+      <DialogTrigger asChild>{trigger}</DialogTrigger>
+      <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Delete Ticket</DialogTitle>
           <DialogDescription>
-            Are you sure you want to delete ticket "{ticket.title}"? This action
-            cannot be undone.
+            Are you sure you want to delete ticket{" "}
+            <span className="font-medium">{ticketId}</span>? This action cannot
+            be undone.
           </DialogDescription>
         </DialogHeader>
-        <DialogFooter>
+        <div className="py-2">
+          <p className="text-sm text-muted-foreground">
+            Ticket: <span className="font-medium">{ticketTitle}</span>
+          </p>
+        </div>
+        <DialogFooter className="sm:justify-end">
           <Button variant="outline" onClick={() => setOpen(false)}>
             Cancel
           </Button>

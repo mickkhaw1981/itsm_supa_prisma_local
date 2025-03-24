@@ -1,73 +1,84 @@
-import { ColumnDef, Row } from "@tanstack/react-table";
+"use client";
+
 import { Ticket } from "@/types/ticket";
-import { StatusBadge } from "./status-badge";
-import { PriorityBadge } from "./priority-badge";
-import { TicketActions } from "./ticket-actions";
+import { StatusBadge } from "@/components/tickets/status-badge";
+import { PriorityBadge } from "@/components/tickets/priority-badge";
+import { TicketActions } from "@/components/tickets/ticket-actions";
 import Link from "next/link";
 
-export const getTicketColumns = (
+// Define function types for the cell renderers
+type RegularCellRenderer = (ticket: Ticket) => React.ReactNode;
+type ActionsCellRenderer = (
+  ticket: Ticket,
   onDelete: (id: string) => void
-): ColumnDef<Ticket>[] => [
+) => React.ReactNode;
+
+// Define a union type that can be either a regular cell or an actions cell
+type CellRenderer = RegularCellRenderer | ActionsCellRenderer;
+
+// Define a type for columns that includes the id, header, and cell render function
+type Column = {
+  id: string;
+  header: string;
+  cell: CellRenderer;
+};
+
+// Column definitions for the ShadCN UI table
+export const columns: Column[] = [
   {
-    accessorKey: "id",
+    id: "id",
     header: "ID",
-    cell: ({ row }: { row: Row<Ticket> }) => {
-      const id: string = row.getValue("id");
-      return (
-        <Link href={`/tickets/${id}`} className="text-blue-600 hover:underline">
-          {id.substring(0, 8)}...
-        </Link>
-      );
-    },
+    cell: (ticket: Ticket) => (
+      <Link
+        href={`/tickets/${ticket.id}`}
+        className="underline-offset-4 hover:underline text-primary"
+      >
+        {ticket.id}
+      </Link>
+    ),
   },
   {
-    accessorKey: "title",
+    id: "title",
     header: "Title",
-    cell: ({ row }: { row: Row<Ticket> }) => {
-      const id: string = row.original.id;
-      return (
-        <Link href={`/tickets/${id}`} className="font-medium hover:underline">
-          {row.getValue("title")}
-        </Link>
-      );
-    },
+    cell: (ticket: Ticket) => (
+      <Link
+        href={`/tickets/${ticket.id}`}
+        className="underline-offset-4 hover:underline text-primary font-medium"
+      >
+        {ticket.title}
+      </Link>
+    ),
   },
   {
-    accessorKey: "status",
+    id: "status",
     header: "Status",
-    cell: ({ row }: { row: Row<Ticket> }) => {
-      const status: Ticket["status"] = row.getValue("status");
-      return <StatusBadge status={status} />;
-    },
+    cell: (ticket: Ticket) => <StatusBadge status={ticket.status} />,
   },
   {
-    accessorKey: "priority",
+    id: "priority",
     header: "Priority",
-    cell: ({ row }: { row: Row<Ticket> }) => {
-      const priority: Ticket["priority"] = row.getValue("priority");
-      return <PriorityBadge priority={priority} />;
-    },
+    cell: (ticket: Ticket) => <PriorityBadge priority={ticket.priority} />,
   },
   {
-    accessorKey: "createdAt",
-    header: "Created",
-    cell: ({ row }: { row: Row<Ticket> }) => {
-      const date: Date = row.getValue("createdAt");
-      return <div>{date.toLocaleDateString()}</div>;
-    },
+    id: "createdAt",
+    header: "Created At",
+    cell: (ticket: Ticket) =>
+      new Date(ticket.createdAt).toLocaleDateString("en-US", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      }),
   },
   {
-    accessorKey: "assignedTo",
+    id: "assignedTo",
     header: "Assigned To",
-    cell: ({ row }: { row: Row<Ticket> }) => {
-      const assignedTo: string | undefined = row.getValue("assignedTo");
-      return <div>{assignedTo || "Unassigned"}</div>;
-    },
+    cell: (ticket: Ticket) => ticket.assignedTo || "Unassigned",
   },
   {
     id: "actions",
-    cell: ({ row }: { row: Row<Ticket> }) => {
-      return <TicketActions ticket={row.original} onDelete={onDelete} />;
-    },
+    header: "Actions",
+    cell: ((ticket: Ticket, onDelete: (id: string) => void) => (
+      <TicketActions ticket={ticket} onDelete={onDelete} />
+    )) as ActionsCellRenderer,
   },
 ];

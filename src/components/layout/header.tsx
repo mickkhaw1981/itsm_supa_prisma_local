@@ -1,27 +1,25 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { ModeToggle } from "@/components/mode-toggle";
 
 export default function Header() {
   return (
-    <header className="border-b bg-background">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
-        <div className="flex items-center gap-6">
-          <Link href="/" className="text-xl font-bold tracking-tight">
+    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container flex h-16 items-center justify-between">
+        <div className="flex items-center gap-6 md:gap-8">
+          <Link href="/" className="font-bold text-xl md:text-2xl">
             ITSM Dashboard
           </Link>
           <nav className="hidden md:flex gap-6">
             <Link
               href="/tickets"
-              className="text-sm font-medium transition-colors hover:text-primary"
+              className="text-muted-foreground transition-colors hover:text-foreground"
             >
               Tickets
             </Link>
           </nav>
         </div>
         <div className="flex items-center gap-4">
-          <Button variant="outline" size="sm">
-            <Link href="/tickets/create">Create Ticket</Link>
-          </Button>
+          <ModeToggle />
         </div>
       </div>
     </header>

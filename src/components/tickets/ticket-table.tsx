@@ -1,3 +1,8 @@
+"use client";
+
+import { useState } from "react";
+import { Ticket } from "@/types/ticket";
+import { columns } from "@/components/tickets/ticket-table-columns";
 import {
   Table,
   TableBody,
@@ -6,94 +11,124 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  useReactTable,
-  getSortedRowModel,
-  SortingState,
-} from "@tanstack/react-table";
-import { Ticket } from "@/types/ticket";
-import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 
-interface TicketTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+interface TicketTableProps {
+  tickets: Ticket[];
   onDelete: (id: string) => void;
 }
 
-export function TicketTable<TData extends Ticket, TValue>({
-  columns,
-  data,
-  onDelete,
-}: TicketTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([]);
+export function TicketTable({ tickets, onDelete }: TicketTableProps) {
+  const [sortConfig, setSortConfig] = useState<{
+    key: keyof Ticket;
+    direction: "ascending" | "descending";
+  } | null>(null);
 
-  const table = useReactTable({
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    onSortingChange: setSorting,
-    state: {
-      sorting,
-    },
+  const handleSort = (key: keyof Ticket) => {
+    let direction: "ascending" | "descending" = "ascending";
+
+    if (sortConfig && sortConfig.key === key) {
+      direction =
+        sortConfig.direction === "ascending" ? "descending" : "ascending";
+    }
+
+    setSortConfig({ key, direction });
+  };
+
+  // Sort tickets based on sortConfig
+  const sortedTickets = [...tickets].sort((a, b) => {
+    if (!sortConfig) return 0;
+
+    const key = sortConfig.key;
+    const valueA = a[key];
+    const valueB = b[key];
+
+    if (key === "createdAt" || key === "updatedAt") {
+      const dateA = new Date(valueA as Date).getTime();
+      const dateB = new Date(valueB as Date).getTime();
+      return sortConfig.direction === "ascending"
+        ? dateA - dateB
+        : dateB - dateA;
+    }
+
+    if (typeof valueA === "string" && typeof valueB === "string") {
+      return sortConfig.direction === "ascending"
+        ? valueA.localeCompare(valueB)
+        : valueB.localeCompare(valueA);
+    }
+
+    return 0;
   });
 
-  if (data.length === 0) {
+  if (tickets.length === 0) {
     return (
       <Card>
-        <CardContent className="p-6 text-center">
-          <p className="text-muted-foreground py-6">No tickets found</p>
+        <CardContent className="p-6">
+          <div className="text-center py-10">
+            <h3 className="text-lg font-medium">No tickets found</h3>
+            <p className="text-muted-foreground mt-2">
+              Try adjusting your filters or create a new ticket.
+            </p>
+          </div>
         </CardContent>
       </Card>
     );
   }
 
   return (
-    <div className="rounded-md border">
-      <Table>
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <TableHead key={header.id}>
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
+    <Card>
+      <CardContent className="p-0">
+        <div className="rounded-md border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                {columns.map((column) => (
+                  <TableHead
+                    key={column.id}
+                    className={
+                      column.id !== "actions" && column.id in sortedTickets[0]
+                        ? "cursor-pointer select-none"
+                        : ""
+                    }
+                    onClick={() => {
+                      if (
+                        column.id !== "actions" &&
+                        column.id in sortedTickets[0]
+                      ) {
+                        handleSort(column.id as keyof Ticket);
+                      }
+                    }}
+                  >
+                    <div className="flex items-center space-x-1">
+                      <span>{column.header}</span>
+                      {sortConfig && sortConfig.key === column.id && (
+                        <span>
+                          {sortConfig.direction === "ascending" ? "↑" : "↓"}
+                        </span>
                       )}
-                </TableHead>
-              ))}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
+                    </div>
+                  </TableHead>
                 ))}
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-    </div>
+            </TableHeader>
+            <TableBody>
+              {sortedTickets.map((ticket) => (
+                <TableRow key={ticket.id}>
+                  {columns.map((column) => (
+                    <TableCell key={`${ticket.id}-${column.id}`}>
+                      {column.id === "actions"
+                        ? // @ts-ignore - We know this is safe because we're checking the id
+                          column.cell(ticket, onDelete)
+                        : // @ts-ignore - We know this is safe because these cells only need one argument
+                          column.cell(ticket)}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </CardContent>
+    </Card>
   );
 }

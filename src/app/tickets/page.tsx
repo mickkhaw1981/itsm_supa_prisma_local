@@ -1,84 +1,71 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { tickets } from "@/lib/mock/tickets";
-import { TicketTable } from "@/components/tickets/ticket-table";
-import { getTicketColumns } from "@/components/tickets/ticket-table-columns";
+import { useState } from "react";
+import Link from "next/link";
+import { getTickets } from "@/lib/mock/tickets";
 import { TicketFilters } from "@/components/tickets/ticket-filters";
+import { TicketTable } from "@/components/tickets/ticket-table";
+import { Button } from "@/components/ui/button";
 import { Ticket } from "@/types/ticket";
 
 export default function TicketsPage() {
-  const [filteredTickets, setFilteredTickets] = useState<Ticket[]>(tickets);
-  const [statusFilter, setStatusFilter] = useState("");
-  const [priorityFilter, setPriorityFilter] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
+  const allTickets = getTickets();
+  const [filteredTickets, setFilteredTickets] = useState<Ticket[]>(allTickets);
 
-  useEffect(() => {
-    let filtered = [...tickets];
+  const handleFilterChange = ({
+    status,
+    priority,
+    search,
+  }: {
+    status?: Ticket["status"];
+    priority?: Ticket["priority"];
+    search?: string;
+  }) => {
+    const filtered = allTickets.filter((ticket) => {
+      // Filter by status if specified
+      if (status && ticket.status !== status) return false;
 
-    // Apply status filter
-    if (statusFilter) {
-      filtered = filtered.filter((ticket) => ticket.status === statusFilter);
-    }
+      // Filter by priority if specified
+      if (priority && ticket.priority !== priority) return false;
 
-    // Apply priority filter
-    if (priorityFilter) {
-      filtered = filtered.filter(
-        (ticket) => ticket.priority === priorityFilter
-      );
-    }
+      // Filter by search term if specified
+      if (search) {
+        const searchLower = search.toLowerCase();
+        return (
+          ticket.title.toLowerCase().includes(searchLower) ||
+          ticket.description.toLowerCase().includes(searchLower) ||
+          ticket.id.toLowerCase().includes(searchLower) ||
+          (ticket.assignedTo &&
+            ticket.assignedTo.toLowerCase().includes(searchLower)) ||
+          ticket.submittedBy.toLowerCase().includes(searchLower)
+        );
+      }
 
-    // Apply search query
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      filtered = filtered.filter(
-        (ticket) =>
-          ticket.title.toLowerCase().includes(query) ||
-          ticket.description.toLowerCase().includes(query) ||
-          ticket.category.toLowerCase().includes(query) ||
-          (ticket.assignedTo && ticket.assignedTo.toLowerCase().includes(query))
-      );
-    }
+      return true;
+    });
 
     setFilteredTickets(filtered);
-  }, [statusFilter, priorityFilter, searchQuery]);
-
-  const resetFilters = () => {
-    setStatusFilter("");
-    setPriorityFilter("");
-    setSearchQuery("");
   };
 
-  const handleDeleteTicket = (id: string) => {
-    // In a real app, this would call an API
-    setFilteredTickets((prevTickets) =>
-      prevTickets.filter((ticket) => ticket.id !== id)
-    );
+  const handleDelete = (id: string) => {
+    // In a real app, this would make an API call
+    // For now we'll just filter the tickets client-side
+    setFilteredTickets((prev) => prev.filter((ticket) => ticket.id !== id));
   };
-
-  const columns = getTicketColumns(handleDeleteTicket);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold tracking-tight">Tickets</h1>
+        <h1 className="text-3xl font-bold tracking-tight">Tickets</h1>
+        <Link href="/tickets/create" passHref>
+          <Button>Create Ticket</Button>
+        </Link>
       </div>
 
-      <TicketFilters
-        statusFilter={statusFilter}
-        setStatusFilter={setStatusFilter}
-        priorityFilter={priorityFilter}
-        setPriorityFilter={setPriorityFilter}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        resetFilters={resetFilters}
-      />
-
-      <TicketTable
-        columns={columns}
-        data={filteredTickets}
-        onDelete={handleDeleteTicket}
-      />
+      <div className="space-y-4">
+        <TicketFilters onFilterChange={handleFilterChange} />
+        <TicketTable tickets={filteredTickets} onDelete={handleDelete} />
+      </div>
     </div>
   );
 }

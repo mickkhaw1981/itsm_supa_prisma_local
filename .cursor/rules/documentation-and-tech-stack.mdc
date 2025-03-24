@@ -8,7 +8,18 @@ alwaysApply: true
 - Review all additional documentation files within the ** docs ** directory provided with the project.
 If additional or updated documentation is required, use MCP servers (Brave Search, Puppeteer, FireCrawl) to locate official and current sources online.
 
+## This Project's Tech Stack:
+- Next.js 15
+- React
+- TypeScript
+- Tailwind CSS
+- ShadCN UI
+- Framer Motion
+- Storybook
+- Prisma
+- Supabase
+
 ## Technical Stack Compliance
-**Adhere strictly to the project's established technology stack.**
-Do not introduce new technologies unless explicitly instructed and justified.
-You may suggest alternative technologies if beneficial, but never implement them without user 
+- **Adhere strictly to the project's established technology stack.**
+- Do not introduce new technologies or packages unless explicitly instructed and justified.
+- You may suggest alternative technologies if beneficial, but never implement them without user approval.
