@@ -18,10 +18,20 @@ export default async function TicketsPage({
   // Apply server-side filtering based on searchParams
   const filteredTickets = allTickets.filter((ticket) => {
     // Filter by status if specified
-    if (params.status && ticket.status !== params.status) return false;
+    if (
+      params.status &&
+      params.status !== "all" &&
+      ticket.status !== params.status
+    )
+      return false;
 
     // Filter by priority if specified
-    if (params.priority && ticket.priority !== params.priority) return false;
+    if (
+      params.priority &&
+      params.priority !== "all" &&
+      ticket.priority !== params.priority
+    )
+      return false;
 
     // Filter by search term if specified
     if (params.search) {

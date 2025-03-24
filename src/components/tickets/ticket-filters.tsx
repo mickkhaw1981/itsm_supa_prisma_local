@@ -24,8 +24,8 @@ export function TicketFilters() {
   // Update the URL when filters change
   useEffect(() => {
     const params = new URLSearchParams();
-    if (status) params.set("status", status);
-    if (priority) params.set("priority", priority);
+    if (status && status !== "all") params.set("status", status);
+    if (priority && priority !== "all") params.set("priority", priority);
     if (search) params.set("search", search);
 
     const url = params.toString() ? `?${params.toString()}` : "";
@@ -50,7 +50,7 @@ export function TicketFilters() {
             <SelectValue placeholder="Any status" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Any status</SelectItem>
+            <SelectItem value="all">Any status</SelectItem>
             <SelectItem value="open">Open</SelectItem>
             <SelectItem value="in-progress">In Progress</SelectItem>
             <SelectItem value="resolved">Resolved</SelectItem>
@@ -67,7 +67,7 @@ export function TicketFilters() {
             <SelectValue placeholder="Any priority" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="">Any priority</SelectItem>
+            <SelectItem value="all">Any priority</SelectItem>
             <SelectItem value="low">Low</SelectItem>
             <SelectItem value="medium">Medium</SelectItem>
             <SelectItem value="high">High</SelectItem>
