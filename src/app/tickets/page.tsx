@@ -59,7 +59,7 @@ export default async function TicketsPage({
       </div>
 
       <div className="space-y-4">
-        <TicketFilters />
+        {/* <TicketFilters /> */}
         <TicketTable tickets={filteredTickets} />
       </div>
     </div>
