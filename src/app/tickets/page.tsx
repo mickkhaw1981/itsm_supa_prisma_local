@@ -9,22 +9,23 @@ export default async function TicketsPage({
 }: {
   searchParams: any;
 }) {
+  // Await searchParams in Next.js 15
+  const params = await searchParams;
+
   // Fetch tickets from database
   const allTickets = await getTicketsFromDb();
 
   // Apply server-side filtering based on searchParams
   const filteredTickets = allTickets.filter((ticket) => {
     // Filter by status if specified
-    if (searchParams.status && ticket.status !== searchParams.status)
-      return false;
+    if (params.status && ticket.status !== params.status) return false;
 
     // Filter by priority if specified
-    if (searchParams.priority && ticket.priority !== searchParams.priority)
-      return false;
+    if (params.priority && ticket.priority !== params.priority) return false;
 
     // Filter by search term if specified
-    if (searchParams.search) {
-      const searchLower = searchParams.search.toLowerCase();
+    if (params.search) {
+      const searchLower = params.search.toLowerCase();
       return (
         ticket.title.toLowerCase().includes(searchLower) ||
         ticket.description.toLowerCase().includes(searchLower) ||

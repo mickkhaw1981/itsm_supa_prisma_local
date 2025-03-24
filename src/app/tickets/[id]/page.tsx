@@ -8,8 +8,13 @@ import { Separator } from "@/components/ui/separator";
 import { TicketTabs } from "@/components/tickets-wrapper";
 
 export default async function Page({ params }: { params: any }) {
+  // Await params in Next.js 15
+  const resolvedParams = await params;
+
   // Get the ID safely
-  const id = Array.isArray(params.id) ? params.id[0] : params.id;
+  const id = Array.isArray(resolvedParams.id)
+    ? resolvedParams.id[0]
+    : resolvedParams.id;
   const ticket = await getTicketByIdFromDb(id);
 
   // Use Next.js notFound() for missing tickets
