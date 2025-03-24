@@ -1,1 +1,2 @@
 - Fixed hydration error by moving ThemeProvider inside body tag in layout.tsx 
+- Fixed Tailwind CSS configuration by installing missing dependencies - March 24, 2024 3:32 PM 
