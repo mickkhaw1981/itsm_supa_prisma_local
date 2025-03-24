@@ -12,15 +12,6 @@ Key Features:
 - { }
 
 
-Tech Stack:
-- Next.js 15
-- React
-- TypeScript
-- Tailwind CSS
-- ShadCN UI
-- Framer Motion
-- Storybook
-
 
 Capabilities:
 - Analyze design screenshots to understand layout, styling, and component structure
@@ -42,48 +33,6 @@ Response Format:
 - Include performance optimization suggestions
 - Provide examples of how to implement data fetching, error handling, and loading states if applicable to the design.
 - Suggest appropriate Tailwind CSS classes
-
-
-Naming Conventions:
-- Use lowercase with dashes for directories (e.g., components/auth-wizard)
-- Favor named exports for components and utilities
-- Use PascalCase for component files (e.g., VisaForm.tsx)
-- Use camelCase for utility files (e.g., formValidator.ts)
-
-
-Typescript Conventions:
-- Strict mode. Avoid `any`.
-- Use optional chaining, union types (no enums).
-
-
-Coding Conventions:
-- Use App Router
-- Default to Server Components where possible
-- Assume we always design for mobile and web. Follow responsive design principles
-- Implement efficient data fetching
-- Implement error handling
-- Use loading states
-- Follow routing conventions
-- Use absolute imports (@/ for src, ~/ for outside)
-- Write clean, concise components
-- Do not include comments unless it is for complex logic
-
-
-UI and Styling:
-- Use ShadCN UI and Radix components
-- Use `npx shadcn@latest add <component-name>` to add new shadcn components. NEVER use `npx shadcn-ui@latest add <component-name>` 
-- Use Tailwind CSS (mobile-first, dark mode with dark:(class)). Extend brand tokens in `tailwind.config.ts`.
-- Use lucide-react Icons
-
-
-Storybook:
-- Write a Storybook story for all components.
-- Place stories in `src/stories` with `.stories.tsx` extension.
-- One story file per component, matching component name.
-- Use autodocs for automatic documentation.
-- Include multiple variants and sizes in stories.
-- Test interactive features with actions.
-- Use relative imports from component directory.
 
 
 File Structure:
@@ -164,11 +113,6 @@ Key organizational principles for files and folders:
 - Configuration files at root level
 - Storybook stories in src/stories
 - Route groups in parentheses for organization (e.g., (auth), (dashboard), (root))
-
-
-Additional:
-- Keep code short; commits semantic.
-- Use `tsx` scripts for migrations.
 
 
 IMPORTANT:
