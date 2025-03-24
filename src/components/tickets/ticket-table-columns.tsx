@@ -23,6 +23,16 @@ type Column = {
   cell: CellRenderer;
 };
 
+// Format date on client-side
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-US", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+};
+
 // Column definitions for the ShadCN UI table
 export const columns: Column[] = [
   {
@@ -62,12 +72,7 @@ export const columns: Column[] = [
   {
     id: "createdAt",
     header: "Created At",
-    cell: (ticket: Ticket) =>
-      new Date(ticket.createdAt).toLocaleDateString("en-US", {
-        day: "numeric",
-        month: "short",
-        year: "numeric",
-      }),
+    cell: (ticket: Ticket) => formatDate(ticket.createdAt),
   },
   {
     id: "assignedTo",

@@ -44,8 +44,8 @@ export function TicketTable({ tickets, onDelete }: TicketTableProps) {
     const valueB = b[key];
 
     if (key === "createdAt" || key === "updatedAt") {
-      const dateA = new Date(valueA as Date).getTime();
-      const dateB = new Date(valueB as Date).getTime();
+      const dateA = new Date(valueA as string).getTime();
+      const dateB = new Date(valueB as string).getTime();
       return sortConfig.direction === "ascending"
         ? dateA - dateB
         : dateB - dateA;
