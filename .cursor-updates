@@ -4,3 +4,15 @@
 - Fixed React hydration error by converting Date objects to ISO strings - March 24, 2024 6:50 PM
 - Implemented ticket detail page components (breadcrumbs, header, detail card, action buttons) - March 24, 2024 7:30 PM
 - Fixed Next.js build errors in detail page with client component approach - March 24, 2024 8:15 PM
+
+## ESLint configuration fixed - 2024-07-11 15:45
+
+- Created simplified `.eslintrc.js` configuration with Next.js core web vitals rules
+- Removed problematic ESLint plugin dependencies
+- Fixed build errors from ESLint configuration
+
+## Simplified Ticket Detail Page to a Server Component - 2024-07-11 16:15
+
+- Converted the ticket detail page to use a server component
+- Used a simpler approach with direct component imports rather than client-side wrappers
+- Fixed build errors by using correct types

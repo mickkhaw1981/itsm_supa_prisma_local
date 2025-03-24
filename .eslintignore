@@ -1,0 +1,15 @@
+# Build and output directories
+node_modules
+.next
+out
+dist
+build
+
+# Coverage directories
+coverage
+
+# Misc
+.github
+.storybook
+**/*.stories.*
+*.d.ts 
